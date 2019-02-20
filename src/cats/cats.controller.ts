@@ -1,12 +1,15 @@
-import { Controller, Get, Post, HttpCode, Header, Param, Body, Res, HttpStatus, HttpException, UseFilters } from '@nestjs/common';
+import { Controller, Get, Post, HttpCode, Header, Param, Body, Res, HttpStatus, HttpException, UseFilters, UsePipes } from '@nestjs/common';
 import { CreateCatDto } from './dto/create-cat.dto';
 import { CatsService } from './cats.service';
 import { Cat } from './interfaces/cat.interface';
 import { MyForbiddenException } from 'src/exceptions/forbidden.exception';
 import { HttpExceptionFilter } from 'src/exceptions/http-filter.exception';
+import { JoiValidationPipe } from 'src/pipes/joi-validation.pipe';
+import { ValidationPipe } from 'src/pipes/validation.pipe';
+import { ParseIntPipe } from 'src/pipes/parse-int.pipe';
 
 @Controller('cats')
-@UseFilters(HttpExceptionFilter) 
+// @UseFilters(HttpExceptionFilter) 
 export class CatsController {
     // inject CatsService through the constructor
     constructor(private readonly catsSerVice: CatsService) {}
@@ -18,7 +21,7 @@ export class CatsController {
     }
 
     @Get(':id')
-    findOne(@Param('id') id) {
+    findOne(@Param('id', new ParseIntPipe()) id) {
         console.log(id);
         return `This action returns a #${id} cat`;
     }
@@ -27,7 +30,8 @@ export class CatsController {
     @HttpCode(204)
     @Header('Cache-Control', 'none')
     // @UseFilters(HttpExceptionFilter) // 绑定异常 filter
-    async create(@Body() createCatDto: CreateCatDto) {
+    // @UsePipes(new JoiValidationPipe(createCatSchema))
+    async create(@Body(new ValidationPipe()) createCatDto: CreateCatDto) {
         // this.catsSerVice.create(createCatDto);
         // throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
         // throw new HttpException({
