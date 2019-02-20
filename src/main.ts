@@ -2,6 +2,7 @@ import { HTTP_SERVER_REF } from '@nestjs/core';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { AllExceptionFilter } from './exceptions/all.exception';
+import { ExcludeNullInterceptor } from './interceptors/exclude-null.interceptor';
 // import { HttpExceptionFilter } from './exceptions/http-filter.exception';
 // import { logger } from './logger.middleware';
 
@@ -11,6 +12,7 @@ async function bootstrap() {
   // app.useGlobalFilters(new HttpExceptionFilter());
   const httpRef = app.get(HTTP_SERVER_REF);
   app.useGlobalFilters(new AllExceptionFilter(httpRef));
+  app.useGlobalInterceptors(new ExcludeNullInterceptor());
   await app.listen(3000);
 }
 bootstrap();
