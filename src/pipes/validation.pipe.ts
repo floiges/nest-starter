@@ -2,6 +2,8 @@ import { Injectable, PipeTransform, ArgumentMetadata, BadRequestException } from
 import { validate } from "class-validator";
 import { plainToClass } from "class-transformer";
 
+// A pipe is a class annotated with the @Injectable() decorator. 
+// The pipe should implement the PipeTransform interface
 // A pipe transforms the input data to the desired output. 
 // Also, it could take care of the validation, 
 // since it's possible to throw an exception when the data is incorrect.
